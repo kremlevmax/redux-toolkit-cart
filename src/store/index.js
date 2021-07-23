@@ -23,8 +23,19 @@ const cartSlice = createSlice({
       }
       state.totalQuantity++;
     },
-    remove(state) {
-      state.cartItems.reduce();
+    remove(state, action) {
+      const existingItem = state.cartItems.find(
+        (cartItem) => cartItem.title === action.payload.title
+      );
+      if (existingItem.quantity === 1) {
+        state.cartItems = state.cartItems.filter(
+          (cartItem) => cartItem.title !== action.payload.title
+        );
+      } else {
+        existingItem.quantity--;
+        existingItem.total -= action.payload.price;
+      }
+      state.totalQuantity--;
     },
   },
 });
