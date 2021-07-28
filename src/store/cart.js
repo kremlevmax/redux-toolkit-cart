@@ -41,7 +41,7 @@ export const cartSlice = createSlice({
   },
 });
 
-const fetchData = (cartItems) => {
+export const fetchData = (cartItems) => {
   return async (dispatch) => {
     dispatch(
       toggleSliceActions.showDataFetchInformation({
@@ -50,15 +50,38 @@ const fetchData = (cartItems) => {
         message: "Sending data in process",
       })
     );
-  };
-  const sendData = async () => {
-    const response = await fetch(
-      "https://cart-db-c59e3-default-rtdb.firebaseio.com/",
-      {
-        method: "PUT",
-        body: JSON.stringify(cartItems),
+    const sendData = async () => {
+      const response = await fetch(
+        "https://cart-db-c59e3-default-rtdb.firebaseio.com/cartitems.json",
+        {
+          method: "PUT",
+          body: JSON.stringify(cartItems),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error while fetching data");
       }
-    );
+
+      dispatch(
+        toggleSliceActions.showDataFetchInformation({
+          status: "Success",
+          title: "Fetching data is done",
+          message: "Fetching data successfully complete",
+        })
+      );
+    };
+    try {
+      sendData();
+    } catch {
+      dispatch(
+        toggleSliceActions.showDataFetchInformation({
+          status: "Error",
+          title: "Error while fetching data",
+          message: "Couldn't connect to server",
+        })
+      );
+    }
   };
 };
 
