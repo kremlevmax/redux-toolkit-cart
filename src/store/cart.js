@@ -65,7 +65,7 @@ export const fetchData = (cartItems) => {
 
       dispatch(
         toggleSliceActions.showDataFetchInformation({
-          status: "Success",
+          status: "success",
           title: "Fetching data is done",
           message: "Fetching data successfully complete",
         })
@@ -76,7 +76,7 @@ export const fetchData = (cartItems) => {
     } catch {
       dispatch(
         toggleSliceActions.showDataFetchInformation({
-          status: "Error",
+          status: "error",
           title: "Error while fetching data",
           message: "Couldn't connect to server",
         })
