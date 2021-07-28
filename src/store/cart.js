@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toggleSliceActions } from "./toggle";
 
 const cartInitialState = { cartItems: [], totalQuantity: 0 };
 
@@ -39,5 +40,26 @@ export const cartSlice = createSlice({
     },
   },
 });
+
+const fetchData = (cartItems) => {
+  return async (dispatch) => {
+    dispatch(
+      toggleSliceActions.showDataFetchInformation({
+        status: "Sending data",
+        title: "Sending...",
+        message: "Sending data in process",
+      })
+    );
+  };
+  const sendData = async () => {
+    const response = await fetch(
+      "https://cart-db-c59e3-default-rtdb.firebaseio.com/",
+      {
+        method: "PUT",
+        body: JSON.stringify(cartItems),
+      }
+    );
+  };
+};
 
 export const cartSliceActions = cartSlice.actions;
