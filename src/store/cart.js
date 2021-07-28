@@ -38,16 +38,40 @@ export const cartSlice = createSlice({
       }
       state.totalQuantity--;
     },
+    putFetchedData(state, action) {
+      state.cartItems = action.payload.cartItems;
+      state.totalQuantity = action.payload.totalQuantity || 0;
+    },
   },
 });
 
-export const fetchData = (cartItems) => {
+export const getCartData = (state) => {
+  return async (dispatch) => {
+    const getData = async () => {
+      const response = await fetch(
+        "https://cart-db-c59e3-default-rtdb.firebaseio.com/cartitems.json"
+      );
+      const data = await response.json();
+      return data;
+    };
+
+    const data = await getData();
+    dispatch(
+      cartSliceActions.putFetchedData({
+        cartItems: data || [],
+        totalQuantity: data != null ? data[0].quantity : 0,
+      })
+    );
+  };
+};
+
+export const sendCartData = (cartItems) => {
   return async (dispatch) => {
     dispatch(
       toggleSliceActions.showDataFetchInformation({
         status: "Sending data",
         title: "Sending...",
-        message: "Sending data in process",
+        message: "Sending data is in process",
       })
     );
     const sendData = async () => {
@@ -60,14 +84,14 @@ export const fetchData = (cartItems) => {
       );
 
       if (!response.ok) {
-        throw new Error("Error while fetching data");
+        throw new Error("An error while fetching data");
       }
 
       dispatch(
         toggleSliceActions.showDataFetchInformation({
           status: "success",
           title: "Fetching data is done",
-          message: "Fetching data successfully complete",
+          message: "Fetching data is successfully complete",
         })
       );
     };

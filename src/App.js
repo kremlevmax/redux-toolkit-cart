@@ -3,8 +3,10 @@ import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
 import Notification from "./components/UI/Notification";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchData } from "./store/cart";
+import { getCartData, sendCartData } from "./store/cart";
 import { useEffect } from "react";
+
+let firstLoad = true;
 
 function App() {
   const cartIsShown = useSelector((state) => state.toggle.cartIsShown);
@@ -15,8 +17,12 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(cartItems);
-    dispatch(fetchData(cartItems));
+    if (firstLoad) {
+      firstLoad = false;
+      dispatch(getCartData());
+      return;
+    }
+    dispatch(sendCartData(cartItems));
   }, [cartItems, dispatch]);
 
   return (
